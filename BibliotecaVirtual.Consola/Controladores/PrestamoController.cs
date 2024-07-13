@@ -1,6 +1,9 @@
 ﻿using BibliotecaVirtual.Consola.Modelos;
 using BibliotecaVirtual.Consola.Respositorios;
 using BibliotecaVirtual.Consola.Enumeraciones;
+using BibliotecaVirtual.Consola.Validaciones;
+using FluentValidation.Results;
+using BibliotecaVirtual.Consola.Validaciones;
 
 namespace BibliotecaVirtual.Consola.Controladores
 {
@@ -9,7 +12,20 @@ namespace BibliotecaVirtual.Consola.Controladores
         public Prestamo PrestarLibro(Prestamo prestamo)
         {
             var repo = new RepositorioPRestamo();
-            
+            var Validator = new PrestamoValidator();
+
+            ValidationResult result = Validator.Validate(prestamo);
+
+            if (!result.IsValid)
+            {
+                foreach (var failure in result.Errors)
+                {
+
+                }
+
+            }
+            prestamo.FechaPrestamo = DateTime.Now;
+
             repo.Crear(prestamo);
 
             return prestamo;
@@ -21,6 +37,7 @@ namespace BibliotecaVirtual.Consola.Controladores
             var repo = new RepositorioPRestamo();
 
             prestamo.Estado = EstadoPrestamoEnum.Finalizado;
+            prestamo.FechaPrestamo = DateTime.Now;
 
             repo.Actualizar(prestamo);
 
